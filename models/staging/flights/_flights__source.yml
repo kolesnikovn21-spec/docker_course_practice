@@ -1,0 +1,116 @@
+sources:
+  - name: demo_src
+    description: Данные из БД авиаперелетов
+    database: dwh_flight
+    tables:
+      - name: aircrafts
+        description: Модели самолетов
+        columns:
+        - name: aircraft_code
+          description: Код модели самолета
+        - name: model
+          description: Название модели самолета
+        - name: "range"
+          description: Дальность
+      - name: airports
+        description: Аэропотрты
+        columns:
+        - name: airport_code
+          description: Код аэропорта
+        - name: airport_name
+          description: Название аэропорта
+        - name: city
+          description: Город
+        - name: coordinates
+          description: Координаты
+        - name: timezone
+          description: Временная зона
+      - name: seats
+        description: Места в самолетах
+        columns:
+        - name: aircraft_code
+          description: Номер рейса
+        - name: seat_no
+          description: Номер места
+        - name: fare_condition
+          description: Условия тарифа
+      - name: boarding_passes
+        columns:
+        - name: boarding_no
+        - name: flight_id
+        - name: seat_no
+        - name: ticket_no
+      - name: bookings
+        columns:
+        - name: book_ref
+        - name: book_date
+        - name: total_amount
+        freshness: # make this a little more strict
+          warn_after:
+            count: 6
+            period: hour
+          error_after: 
+            count: 300000 
+            period: hour
+          # Apply a where clause in the freshness query
+          filter: "current_timestamp::date - book_date::date < 600000"
+        loaded_at_field: book_date::timestamp
+      - name: flights
+        columns:
+        - name: flight_id
+        - name: flight_no
+        - name: scheduled_departure
+        - name: scheduled_arrival
+        - name: departure_airport
+        - name: arrival_airport
+        - name: status
+        - name: aircraft_code
+        - name: actual_departure
+        - name: actual_arrival
+      - name: flights_v
+        columns:
+        - name: flight_id
+        - name: flight_no
+        - name: scheduled_departure
+        - name: scheduled_departure_local
+        - name: scheduled_arrival
+        - name: scheduled_arrival_local
+        - name: scheduled_duration
+        - name: departure_airport
+        - name: departure_airport_name
+        - name: departure_city
+        - name: arrival_airport
+        - name: arrival_airport_name
+        - name: arrival_city
+        - name: status
+        - name: aircraft_code
+        - name: actual_departure
+        - name: actual_departure_local
+        - name: actual_arrival
+        - name: actual_arrival_local
+        - name: actual_duration
+      - name: routes
+        columns:
+        - name: flight_no
+        - name: departure_airport
+        - name: departure_airport_name
+        - name: departure_city
+        - name: arrival_airport
+        - name: arrival_airport_name
+        - name: arrival_city
+        - name: aircraft_code
+        - name: duration
+        - name: days_of_week
+      - name: ticket_flights
+        columns:
+        - name: ticket_no
+        - name: flight_id
+        - name: fare_conditions
+        - name: amount
+      - name: tickets
+        columns:
+        - name: ticket_no
+        - name: book_ref
+        - name: passenger_id
+        - name: passenger_name
+        - name: contact_data
